@@ -1,0 +1,8 @@
+image: swipl:latest
+
+before_script:
+  - apt-get update -qq && apt-get install -y -qq gcc
+
+test:
+  script:
+    - make check
