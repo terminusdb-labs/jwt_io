@@ -1,7 +1,7 @@
-image: swipl:latest
+image: registry.gitlab.com/canbican/jwt_io:tag
 
 before_script:
-  - apt-get update -qq && apt-get install -y -qq gcc make libjwt0
+  - apt-get update -qq && apt-get install -y -qq gcc make dh-autoreconf
 
 test:
   script:
