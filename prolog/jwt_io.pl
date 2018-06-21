@@ -67,7 +67,7 @@ openssl ec -in sample-private.pem -pubout -out sample-public.pem
 @license BSD
 */
 
-:- load_foreign_library(jwt_io).
+:- use_foreign_library(jwt_io).
 
 :- use_module(library(http/json)).
 :- use_module(library(settings)).
