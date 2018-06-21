@@ -52,3 +52,4 @@ releasebranch: FORCE
 dockerimage: FORCE
 	docker build -t registry.gitlab.com/canbican/jwt_io .
 	docker push registry.gitlab.com/canbican/jwt_io
+
