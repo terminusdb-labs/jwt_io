@@ -43,7 +43,7 @@ pl_jwt_decode(term_t in, term_t out_payload, term_t out_algorithm, term_t in_key
 {
 	char           *input, *key, *payload;
 	const char     *algorithm;
-	int		jwt_result, retval;
+	int		jwt_result, retval1, retval2;
 	jwt_t          *jwt;
 
 	get_pl_arg_str("jwt_encode_from_string/4", "in", in, &input);
@@ -56,11 +56,16 @@ pl_jwt_decode(term_t in, term_t out_payload, term_t out_algorithm, term_t in_key
 	if (!jwt_result) {
 		payload = jwt_get_grants_json(jwt, NULL);
 		algorithm = jwt_alg_str(jwt_get_alg(jwt));
-		retval = PL_unify_atom_chars(out_payload, payload);
-		retval = PL_unify_atom_chars(out_algorithm, algorithm);
-		free(payload);
-		jwt_free(jwt);
-		PL_succeed;
+		retval1 = PL_unify_atom_chars(out_payload, payload);
+		retval2 = PL_unify_atom_chars(out_algorithm, algorithm);
+    if (retval1 != 0 && retval2 !=0) {
+		  free(payload);
+		  jwt_free(jwt);
+		  PL_succeed;
+    } else {
+      PL_warning("cannot decode jwt: %s %s", strerror(retval1), strerror(retval2));
+      PL_fail;
+    }
 	} else {
     PL_warning("cannot decode jwt: %s", strerror(jwt_result));
     PL_fail;
