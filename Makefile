@@ -5,7 +5,7 @@ JWTLDFLAGS=$(shell pkg-config --libs libjwt)
 JWTCFLAGS=$(shell pkg-config --cflags libjwt)
 SSLLDFLAGS=-lssl -lcrypto
 SSLCFLAGS=
-CFLAGS=$(JWTCFLAGS) $(SSLCFLAGS) -pedantic -Wall -fpic -c
+CFLAGS=-D_GNU_SOURCE $(JWTCFLAGS) $(SSLCFLAGS) -pedantic -Wall -fpic -c
 LDFLAGS=$(JWTLDFLAGS) $(SSLLDFLAGS) -shared
 
 LIBEXT=$(shell swipl -q -g 'current_prolog_flag(shared_object_extension, Ext), writeln(Ext)' -t halt)

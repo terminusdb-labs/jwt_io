@@ -1,8 +1,5 @@
 image: registry.gitlab.com/canbican/jwt_io:latest
 
-before_script:
-  - apt-get update -qq && apt-get install -y -qq gcc make dh-autoreconf
-
 test:
   script:
     - make check
