@@ -1,5 +1,6 @@
 #include <SWI-Prolog.h>
 #include <SWI-Stream.h>
+#include <stdio.h>
 #include <strings.h>
 #include <jwt.h>
 
