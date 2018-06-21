@@ -2,4 +2,5 @@ image: registry.gitlab.com/canbican/jwt_io:7.7.16.1libjwt
 
 test:
   script:
+    - /sbin/ldconfig
     - make check
