@@ -31,6 +31,8 @@
 
 Generates and verifies Json Web Tokens.
 
+The module requires libjwt to compile.
+
 In addition to jwt_encode/3 and jwt_decode/3, the following settings are required for proper functionality:
 
   * =jwt_io:clock_tolerance=: (default 60) number of seconds to tolerate differences between the encoding and decoding times.
@@ -60,6 +62,7 @@ openssl ec -in sample-private.pem -pubout -out sample-public.pem
 ==
 
 @see https://jwt.io/
+@see https://github.com/benmcollins/libjwt
 @author Can Bican
 @license BSD
 */
