@@ -1,7 +1,9 @@
 image: swipl:latest
 
 before_script:
-  - apt-get update -qq && apt-get install -y -qq gcc make
+  - apt-get install software-properties-common
+  - add-apt-repository ppa:ben-collins/libjwt
+  - apt-get update -qq && apt-get install -y -qq gcc make libjwt
 
 test:
   script:
