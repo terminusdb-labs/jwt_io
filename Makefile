@@ -17,7 +17,6 @@ testfiles := $(wildcard tests/*.plt)
 all: $(TARGET)
 
 $(TARGET): src/$(LIBNAME).o
-	mkdir -p lib/x86_64-linux
 	gcc $(LDFLAGS) -o $@ $<
 
 %.o: %.c
