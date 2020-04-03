@@ -6,23 +6,22 @@ JWTCFLAGS=$(shell pkg-config --cflags libjwt)
 SSLLDFLAGS=-lssl -lcrypto
 SSLCFLAGS=
 CFLAGS=-D_GNU_SOURCE $(JWTCFLAGS) $(SSLCFLAGS) -pedantic -Wall -Wno-unused-result -fpic -c
-LDFLAGS=$(JWTLDFLAGS) $(SSLLDFLAGS) -shared -Wl,-rpath='$$ORIGIN'
+LDFLAGS=$(JWTLDFLAGS) $(SSLLDFLAGS) -shared
 
 LIBEXT=$(shell swipl -q -g 'current_prolog_flag(shared_object_extension, Ext), writeln(Ext)' -t halt)
 LIBNAME=jwt_io
-TARGET=lib/x86_64-linux/$(LIBNAME).$(LIBEXT)
 
 testfiles := $(wildcard tests/*.plt)
 
-all: $(TARGET)
+all: $(LIBNAME).$(LIBEXT)
 
-$(TARGET): src/$(LIBNAME).o
-	gcc $(LDFLAGS) -o $@ $<
+$(LIBNAME).$(LIBEXT): src/$(LIBNAME).o
+	swipl-ld $(LDFLAGS) -o $@ $<
 
 %.o: %.c
 	swipl-ld $(CFLAGS) $<
 
-check: $(TARGET)$(testfiles)
+check: $(LIBNAME).$(LIBEXT) $(testfiles)
 
 %.plt: FORCE
 	swipl -s $@ -g run_tests -t halt
