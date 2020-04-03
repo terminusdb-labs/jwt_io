@@ -62,7 +62,6 @@ pl_jwt_decode(term_t in, term_t out_payload, term_t out_algorithm, term_t in_key
 		jwt_free(jwt);
 		PL_succeed;
 	} else {
-    PL_warning("cannot decode jwt: %s", strerror(jwt_result));
     PL_fail;
   }
 }

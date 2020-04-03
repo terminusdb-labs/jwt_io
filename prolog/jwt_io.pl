@@ -203,6 +203,7 @@ jwt_iss_valid(Payload, Options) :-
 
 jwt_decode_from_string(Data, Payload, Key) :-
   member(Key.type, ['RSA', 'ECDSA']),
+  !,
   jwt_decode_from_string(Data, Payload, Key.algorithm, Key.public_key),
   !.
 
