@@ -26,7 +26,7 @@
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-:- module(jwt_io, [jwt_encode/3, jwt_decode/3]).
+:- module(jwt_io, [jwt_encode/3, jwt_decode/3, jwt_decode_head/2]).
 /** <module> Json Web Tokens implementation
 
 Generates and verifies Json Web Tokens.
@@ -126,17 +126,21 @@ jwt_encode(Kid, Claims, Token) :-
 % @arg Options options
 %
 jwt_decode(Data, Payload, Options) :-
-  jwt_decode_from_string(Data, PayloadFirst, _, ''),
-  atom_json_dict(PayloadFirst, PayloadDict, [as(string)]),
-  atom_string(Kid, PayloadDict.kid),
+  jwt_decode_head(Data, PayloadFirst),
+  atom_json_dict(PayloadFirst, PayloadHeader, [as(string)]),
+  atom_string(Kid, PayloadHeader.kid),
   get_key_from_settings(Kid, KeyDict),
   jwt_decode_from_string(Data, Payload, KeyDict),
+  atom_json_dict(Payload, PayloadDict, [as(string)]),
   jwt_jti_valid(PayloadDict),
   jwt_exp_valid(PayloadDict),
   jwt_nbf_valid(PayloadDict),
   jwt_iss_valid(PayloadDict, Options),
   jwt_aud_valid(PayloadDict, Options),
   jwt_iat_valid(PayloadDict).
+
+jwt_decode_head(Data, Payload) :-
+  jwt_parse_head(Data, Payload).
 
 get_jti(Jti) :-
   setting(jti_generator, Generator),
