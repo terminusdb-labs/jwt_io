@@ -8,12 +8,12 @@
 install_t install(void);
 
 static void get_pl_arg_str(char *predicate_name, char *term_name, term_t term, char **out) {
-	if (!PL_get_atom_chars(term, out)) {
-		char           *warning;
-		asprintf(&warning, "%s: instantiation fault (%s)", predicate_name, term_name);
-		PL_warning(warning);
-		free(warning);
-	}
+    if (!PL_get_atom_chars(term, out)) {
+        char *warning;
+        asprintf(&warning, "%s: instantiation fault (%s)", predicate_name, term_name);
+        PL_warning(warning);
+        free(warning);
+    }
 }
 
 static foreign_t pl_jwt_encode(term_t in, term_t out, term_t key_term, term_t algorithm) {
