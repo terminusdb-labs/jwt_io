@@ -102,9 +102,9 @@ jwt_encode(Kid, Claims, Token) :-
   claims_with_aud(Claims, ClaimsWithAud),
   claims_with_iat(ClaimsWithAud, ClaimsWithIat),
   claims_with_iss(ClaimsWithIat, Key, ClaimsWithIss),
-  ClaimsNew = ClaimsWithIss.put(_{kid: Kid, jti: Jti}),
+  ClaimsNew = ClaimsWithIss.put(_{jti: Jti}),
   atom_json_dict(Data,ClaimsNew,[as(atom)]),
-  jwt_encode_from_string(Data, Token, Key.key, Key.algorithm).
+  jwt_encode_from_string(Data, Token, Key.key, Key.algorithm, Kid).
 
 %! jwt_decode(+Data: atom, -Payload:dict, +Options:options) is semidet
 %
