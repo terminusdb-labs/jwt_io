@@ -44,6 +44,7 @@ static foreign_t pl_jwt_parse_head(term_t in, term_t head_term) {
     if (!jwt_result) {
         head_payload = jwt_get_headers_json(jwt, NULL);
         (void) PL_unify_atom_chars(head_term, head_payload);
+        free(head_payload);
         jwt_free(jwt);
         PL_succeed;
     }
