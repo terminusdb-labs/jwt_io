@@ -35,7 +35,6 @@ FORCE:
 
 clean:
 	rm -f src/$(LIBNAME).o $(LIBNAME).$(LIBEXT)
-	-rmdir src
 
 make_tgz: FORCE
 	rm -f ../$(packname)-$(version).tgz
