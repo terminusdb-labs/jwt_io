@@ -1,4 +1,4 @@
-FROM swipl:7.7.16
+FROM swipl:8.1.12
 LABEL maintainer "Can Bican <can@bican.net>"
 RUN apt-get update
 RUN apt-get install -qq -y gcc make dh-autoreconf wget pkg-config libssl-dev git libgpm2
