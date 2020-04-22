@@ -19,23 +19,45 @@ get_pl_arg_str(char *predicate_name, char *term_name, term_t term, char **out)
 }
 
 static		foreign_t
-pl_jwt_encode(term_t in, term_t out, term_t key_term, term_t algorithm)
+pl_jwt_encode(term_t in, term_t out, term_t key_term, term_t algorithm, term_t key_id)
 {
 	jwt_t          *jwt;
-	char           *result, *grants, *alg_str, *key;
+	char           *result, *grants, *alg_str, *key, *kid;
 	int		rval;
 
-	get_pl_arg_str("jwt_encode_from_string/4", "in", in, &grants);
-	get_pl_arg_str("jwt_encode_from_string/4", "key", key_term, &key);
-	get_pl_arg_str("jwt_encode_from_string/4", "algorithm", algorithm, &alg_str);
+	get_pl_arg_str("jwt_encode_from_string/5", "in", in, &grants);
+	get_pl_arg_str("jwt_encode_from_string/5", "key", key_term, &key);
+        get_pl_arg_str("jwt_encode_from_string/5", "kid", key_id, &kid);
+	get_pl_arg_str("jwt_encode_from_string/5", "algorithm", algorithm, &alg_str);
 	jwt_new(&jwt);
 	jwt_add_grants_json(jwt, grants);
+        jwt_add_header(jwt, "kid", kid);
 	jwt_set_alg(jwt, jwt_str_alg(alg_str), (const unsigned char *)key, strlen(key));
 	result = jwt_encode_str(jwt);
 	rval = PL_unify_atom_chars(out, result);
 	free(result);
 	jwt_free(jwt);
 	return rval;
+}
+
+static		foreign_t
+pl_jwt_parse_head(term_t in, term_t head_term) {
+    char        *input, *head_payload;
+    jwt_t       *jwt;
+    int		jwt_result;
+    get_pl_arg_str("jwt_encode_from_string/4", "in", in, &input);
+
+    jwt_result = jwt_decode(&jwt, input, NULL, 0);
+    if (!jwt_result) {
+        head_payload = jwt_get_headers_json(jwt, NULL);
+        (void) PL_unify_atom_chars(head_term, head_payload);
+        free(head_payload);
+        jwt_free(jwt);
+        PL_succeed;
+    }
+    else {
+        PL_fail;
+    }
 }
 
 static		foreign_t
@@ -62,7 +84,6 @@ pl_jwt_decode(term_t in, term_t out_payload, term_t out_algorithm, term_t in_key
 		jwt_free(jwt);
 		PL_succeed;
 	} else {
-    PL_warning("cannot decode jwt: %s", strerror(jwt_result));
     PL_fail;
   }
 }
@@ -70,6 +91,7 @@ pl_jwt_decode(term_t in, term_t out_payload, term_t out_algorithm, term_t in_key
 install_t
 install(void)
 {
-	PL_register_foreign("jwt_encode_from_string", 4, pl_jwt_encode, 0);
+	PL_register_foreign("jwt_parse_head", 2, pl_jwt_parse_head, 0);
+	PL_register_foreign("jwt_encode_from_string", 5, pl_jwt_encode, 0);
 	PL_register_foreign("jwt_decode_from_string", 4, pl_jwt_decode, 0);
 }
