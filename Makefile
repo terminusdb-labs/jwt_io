@@ -42,7 +42,7 @@ clean:
 
 make_tgz: FORCE
 	rm -f ../$(packname)-$(version).tgz
-	find ../$(packname) -name '*.pl' -o -name '*.plt' -o -name '*.pem' -o -name 'rs.*' -o -name 'test_file*' -o -name LICENSE -o -name Makefile -o -name '*.c' -o -name '*.h'|sed -e 's/^...//'|xargs tar cvzfp ../$(packname)-$(version).tgz -C ..
+	find ../$(packname) -name '*.pl' -o -name '*.plt' -o -name '*.pem' -o -name 'rs*' -o -name 'test_file*' -o -name LICENSE -o -name Makefile -o -name '*.c' -o -name '*.h'|sed -e 's/^...//'|xargs tar cvzfp ../$(packname)-$(version).tgz -C ..
 
 release: check make_tgz clean releasebranch
 	mv -n ../$(packname)-$(version).tgz .
