@@ -1,4 +1,4 @@
-image: registry.gitlab.com/canbican/jwt_io:latest
+image: registry.gitlab.com/canbican/jwt_io:VERSION
 
 test:
   script:

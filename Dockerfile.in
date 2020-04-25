@@ -1,0 +1,7 @@
+FROM swipl:DOCKER_SWIPL
+LABEL maintainer "Can Bican <can@bican.net>"
+LABEL version="VERSION"
+RUN apt-get update
+RUN apt-get install -qq -y gcc make dh-autoreconf wget pkg-config libssl-dev git libgpm2
+RUN wget https://github.com/akheron/jansson/archive/vDOCKER_JANSSON.tar.gz && tar xvzfp vDOCKER_JANSSON.tar.gz && cd jansson-DOCKER_JANSSON && autoreconf -i && ./configure && make && make install && cd .. && rm -rf jansson-DOCKER_JANSSON vDOCKER_JANSSON.tar.gz
+RUN wget https://github.com/benmcollins/libjwt/archive/vDOCKER_LIBJWT.tar.gz && tar xvzfp vDOCKER_LIBJWT.tar.gz && cd libjwt-DOCKER_LIBJWT && autoreconf -i && ./configure && make && make install && cd .. && rm -rf vDOCKER_LIBJWT.tar.gz libjwt-DOCKER_LIBJWT

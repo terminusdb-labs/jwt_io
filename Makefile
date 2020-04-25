@@ -1,6 +1,10 @@
 version   := $(shell swipl -s pack.pl -g 'version(X), writeln(X).' -t halt)
 packname  := $(shell basename $$(pwd))
 
+DOCKER_SWIPL=8.1.12
+DOCKER_JANSSON=2.12
+DOCKER_LIBJWT=1.12.0
+
 JWTLDFLAGS=$(shell pkg-config --libs libjwt)
 JWTCFLAGS=$(shell pkg-config --cflags libjwt)
 SSLLDFLAGS=-lssl -lcrypto
@@ -13,7 +17,7 @@ LIBNAME=jwt_io
 
 testfiles := $(wildcard tests/*.plt)
 
-all: $(LIBNAME).$(LIBEXT)
+all: $(LIBNAME).$(LIBEXT) .gitlab-ci.yml
 
 $(LIBNAME).$(LIBEXT): src/$(LIBNAME).o
 	swipl-ld $(LDFLAGS) -o $@ $<
@@ -34,7 +38,7 @@ install:
 FORCE:
 
 clean:
-	rm -f src/$(LIBNAME).o $(LIBNAME).$(LIBEXT)
+	rm -f src/$(LIBNAME).o $(LIBNAME).$(LIBEXT) Dockerfile .gitlab-ci.yml
 
 make_tgz: FORCE
 	rm -f ../$(packname)-$(version).tgz
@@ -48,7 +52,17 @@ release: check make_tgz clean releasebranch
 releasebranch: FORCE
 	git checkout releases
 
-dockerimage: FORCE
-	docker build -t registry.gitlab.com/canbican/jwt_io .
-	docker push registry.gitlab.com/canbican/jwt_io
+dockerimage: FORCE Dockerfile
+	docker build -t registry.gitlab.com/canbican/jwt_io:$(version) .
+	docker push registry.gitlab.com/canbican/jwt_io:$(version)
 
+Dockerfile: Dockerfile.in
+	sed -e 's/DOCKER_SWIPL/$(DOCKER_SWIPL)/g' \
+		  -e 's/DOCKER_JANSSON/$(DOCKER_JANSSON)/g' \
+			-e 's/DOCKER_LIBJWT/$(DOCKER_LIBJWT)/g' \
+			-e 's/VERSION/$(version)/g' \
+			< $< > $@
+
+.gitlab-ci.yml: .gitlab-ci.yml.in
+	sed -e 's/VERSION/$(version)/g' \
+			< $< > $@

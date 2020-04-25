@@ -80,3 +80,5 @@ test(aud) :- set_setting(jwt_io:audience, "testaudnot"), jwt_encode('hmac256', _
 test(jti) :- jwt_encode('hmac256', _{sub: 'a'}, X), jwt_decode(X, _, []).
 test(jti, fail) :- jwt_encode('hmac256', _{sub: 'a'}, X), jwt_decode(X, Y, []), jwt_decode(X, Y, []).
 test(jti, fail) :- jwt_encode('hmac256', _{sub: 'a'}, X), jwt_decode(X, Y, []), not(jwt_decode(X, Y, [])), jwt_decode(X, Y, []).
+
+:- end_tests(jwt_io).
