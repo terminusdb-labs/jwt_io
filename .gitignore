@@ -1,5 +1,4 @@
 /*.dylib
 /src/*.o
-.gitlab-ci.yml
 Dockerfile
 jwt_io.so
