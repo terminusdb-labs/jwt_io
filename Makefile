@@ -17,7 +17,7 @@ LIBNAME=jwt_io
 
 testfiles := $(wildcard tests/*.plt)
 
-all: $(LIBNAME).$(LIBEXT) .gitlab-ci.yml
+all: $(LIBNAME).$(LIBEXT)
 
 $(LIBNAME).$(LIBEXT): src/$(LIBNAME).o
 	swipl-ld $(LDFLAGS) -o $@ $<
