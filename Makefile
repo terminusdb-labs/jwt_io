@@ -20,7 +20,7 @@ testfiles := $(wildcard tests/*.plt)
 all: $(LIBNAME).$(LIBEXT)
 
 $(LIBNAME).$(LIBEXT): src/$(LIBNAME).o
-	swipl-ld $(LDFLAGS) -o $@ $<
+	$(CC) $(LDFLAGS) -o $@ $<
 
 %.o: %.c
 	swipl-ld $(CFLAGS) $<
