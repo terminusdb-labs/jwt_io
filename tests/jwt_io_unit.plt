@@ -66,3 +66,5 @@ test(jwt_nbf_valid) :- jwt_io:jwt_nbf_valid(_{}).
 test(jwt_nbf_valid) :- get_time(Now), jwt_io:jwt_nbf_valid(_{nbf: Now}).
 test(jwt_nbf_valid, fail) :- get_time(Now), Then is Now + 500000, jwt_io:jwt_nbf_valid(_{nbf: Then}).
 test(jwt_nbf_valid) :- get_time(Now), Then is Now - 500000, jwt_io:jwt_nbf_valid(_{nbf: Then}).
+
+:- end_tests(jwt_io_unit).

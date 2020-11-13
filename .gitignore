@@ -1,2 +1,4 @@
 /*.dylib
 /src/*.o
+Dockerfile
+jwt_io.so
