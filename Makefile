@@ -21,6 +21,7 @@ testfiles := $(wildcard tests/*.plt)
 all: $(PACKSODIR)/$(LIBNAME).$(LIBEXT)
 
 $(PACKSODIR)/$(LIBNAME).$(LIBEXT): src/$(LIBNAME).o
+	mkdir -p $(PACKSODIR)
 	$(CC) -o $@ $< $(LDFLAGS)
 
 %.o: %.c
