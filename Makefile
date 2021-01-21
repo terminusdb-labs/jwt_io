@@ -5,6 +5,7 @@ DOCKER_SWIPL=8.1.12
 DOCKER_JANSSON=2.12
 DOCKER_LIBJWT=1.12.0
 
+PACKSODIR=$(shell swipl -q -g "use_module(library(prolog_pack)), prolog_pack:def_environment('PACKSODIR', X), writeln(X)." -t halt)
 JWTLDFLAGS=$(shell pkg-config --libs libjwt)
 JWTCFLAGS=$(shell pkg-config --cflags libjwt)
 SSLLDFLAGS=-lssl -lcrypto
@@ -17,28 +18,27 @@ LIBNAME=jwt_io
 
 testfiles := $(wildcard tests/*.plt)
 
-all: $(LIBNAME).$(LIBEXT)
+all: $(PACKSODIR)/$(LIBNAME).$(LIBEXT)
 
-$(LIBNAME).$(LIBEXT): src/$(LIBNAME).o
-	$(CC) $(LDFLAGS) -o $@ $<
+$(PACKSODIR)/$(LIBNAME).$(LIBEXT): src/$(LIBNAME).o
+	$(CC) -o $@ $< $(LDFLAGS)
 
 %.o: %.c
-	swipl-ld $(CFLAGS) $<
+	swipl-ld $(CFLAGS) $< -o $@
 
-check: $(LIBNAME).$(LIBEXT) $(testfiles)
+check: $(PACKSODIR)/$(LIBNAME).$(LIBEXT) $(testfiles)
 
 %.plt: FORCE
 	swipl -s $@ -g run_tests -t halt
 
 install:
 	mkdir -p $(PACKSODIR)
-	cp $(LIBNAME).$(LIBEXT) $(PACKSODIR)
 	swipl -q -g 'doc_pack($(packname))' -t halt
 
 FORCE:
 
 clean:
-	rm -f src/$(LIBNAME).o $(LIBNAME).$(LIBEXT) Dockerfile .gitlab-ci.yml
+	rm -f src/$(LIBNAME).o $(PACKSODIR)/$(LIBNAME).$(LIBEXT) Dockerfile .gitlab-ci.yml
 
 make_tgz: FORCE
 	rm -f ../$(packname)-$(version).tgz
