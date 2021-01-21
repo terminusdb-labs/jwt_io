@@ -3,7 +3,7 @@
 :- use_module(library(settings)).
 :- use_module(library(http/json)).
 
-:- use_module(prolog/jwt_io).
+:- use_module(library(jwt_io)).
 
 :- set_setting(jwt_io:clock_tolerance, 30).
 

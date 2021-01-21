@@ -1,6 +1,6 @@
 :- begin_tests(jwt_args).
 
-:- use_module(prolog/jwt_io).
+:- use_module(library(jwt_io)).
 
 :- set_setting(jwt_io:keys, [
     k{kid: 'atom', type: 'HMAC', algorithm: 'HS256', key: 'weak_password'}

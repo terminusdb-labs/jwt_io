@@ -3,7 +3,7 @@
 :- use_module(library(settings)).
 :- use_module(library(http/json)).
 
-:- use_module(prolog/jwt_io).
+:- use_module(library(jwt_io)).
 
 test(get_key_file, Key = 'test 123\n\n---\n') :-
   jwt_io:get_key_file('tests/test_file', Key).
