@@ -26,7 +26,7 @@
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-:- module(jwt_io, [jwt_encode/3, jwt_decode/3, jwt_decode_head/2]).
+:- module(jwt_io, [jwt_encode/3, jwt_decode/3, jwt_decode_head/2, setup_jwks/1]).
 /** <module> Json Web Tokens implementation
 
 Generates and verifies Json Web Tokens.
@@ -70,6 +70,8 @@ openssl ec -in sample-private.pem -pubout -out sample-public.pem
 :- use_foreign_library(foreign(jwt_io)).
 
 :- use_module(library(http/json)).
+:- use_module(library(http/http_client)).
+:- use_module(library(http/http_json)).
 :- use_module(library(settings)).
 
 :- setting(keys,            list(dict), [],   'Signing keys').
@@ -292,3 +294,51 @@ read_key_file(Key, KeyRead) :-
 get_key_file(File, Key) :-
   read_file_to_string(File, KeyStr, []),
   atom_string(Key, KeyStr).
+
+
+wrap_key(PubKeyString, PadStart, PadWidth, StrLength, Acc, Output) :-
+  NewPadStart is PadStart + PadWidth,
+  (   NewPadStart < StrLength
+  ->  sub_string(PubKeyString, PadStart, PadWidth, _, SubString),
+      format(string(NewAcc), "~s~s~n", [Acc, SubString]),
+      wrap_key(PubKeyString, NewPadStart, PadWidth, StrLength, NewAcc, Output)
+  ;   Output = Acc
+  ).
+
+/* convert_jwt_to_key(+Key, -SettingsKey) is semidet.
+ *
+ * Converts a key from a JWKS endpoint to a key that is usable in the settings
+ */
+convert_jwk_to_key(Key, SettingsKey) :-
+  Key.use = "sig", % key should be skipped if it is not sig
+  Key.kty = "RSA", % only support RSA for the time being
+  memberchk(PubKeyString, Key.x5c),
+  string_length(PubKeyString, StrLength),
+  wrap_key(PubKeyString, 0, 64, StrLength, "", WrappedKey),
+  format(string(PubKeyFormatted),
+         "-----BEGIN PUBLIC KEY-----~n~s-----END PUBLIC KEY-----",
+         [WrappedKey]),
+  tmp_file_stream(text, File, Stream),
+  write(Stream, PubKeyFormatted),
+  close(Stream),
+  SettingsKey = _{kid: Key.kid,
+                  type: "RSA",
+                  algorithm: Key.alg,
+                  public_key: File}.
+
+/* setup_jwks(+Endpoint) is nondet.
+ *
+ * Sets up a JWKS endpoint to use and set the key settings accordingly.
+ * Only supports RSA for now and be wary that it overwrites the existing
+ * configuration.
+ *
+ * Another limitation so far is that this is quite inefficient, as the pubkey
+ * is being written to a temporary file and then read again by the kid
+ * predicate. This module should probably be refactored entirely.
+ *
+ * It also assumes the auth0 JWKS structure.
+ */
+setup_jwks(Endpoint) :-
+  http_get(Endpoint, Data, [json_object(dict)]),
+  maplist(convert_jwk_to_key, Data.keys, Keys),
+  set_setting(jwt_io:keys, Keys).
