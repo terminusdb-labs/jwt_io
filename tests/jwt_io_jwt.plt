@@ -84,7 +84,7 @@ test(jti, fail) :- jwt_encode('hmac256', _{sub: 'a'}, X), jwt_decode(X, Y, []), 
 test(jwks_endpoint) :-
   jwt_io:setup_jwks('https://terminushub.eu.auth0.com/.well-known/jwks.json'),
   setting(jwt_io:keys, Keys),
-  Keys = [_{algorithm:"RS256",kid:"Njk1Rjk4RjdBRkJBNDI5RUU4RDhGQTlGQ0YzNDAwQTBDNzAyMDA2Mg",public_key: _,type:"RSA"},
-          _{algorithm:"RS256",kid:"H2GzHR5oDAnl1QSsgnwgw",public_key:_,type:"RSA"}].
+  Keys = [_{algorithm:'RS256',kid:'Njk1Rjk4RjdBRkJBNDI5RUU4RDhGQTlGQ0YzNDAwQTBDNzAyMDA2Mg',public_key: _,type:'RSA'},
+          _{algorithm:'RS256',kid:'H2GzHR5oDAnl1QSsgnwgw',public_key:_,type:'RSA'}].
 
 :- end_tests(jwt_io).
