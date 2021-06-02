@@ -321,9 +321,11 @@ convert_jwk_to_key(Key, SettingsKey) :-
   tmp_file_stream(text, File, Stream),
   write(Stream, PubKeyFormatted),
   close(Stream),
-  SettingsKey = _{kid: Key.kid,
-                  type: "RSA",
-                  algorithm: Key.alg,
+  atom_string(KidAtom, Key.kid),
+  atom_string(AlgAtom, Key.alg),
+  SettingsKey = _{kid: KidAtom,
+                  type: 'RSA',
+                  algorithm: AlgAtom,
                   public_key: File}.
 
 /* setup_jwks(+Endpoint) is nondet.
