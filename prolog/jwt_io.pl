@@ -302,7 +302,8 @@ wrap_key(PubKeyString, PadStart, PadWidth, StrLength, Acc, Output) :-
   ->  sub_string(PubKeyString, PadStart, PadWidth, _, SubString),
       format(string(NewAcc), "~s~s~n", [Acc, SubString]),
       wrap_key(PubKeyString, NewPadStart, PadWidth, StrLength, NewAcc, Output)
-  ;   Output = Acc
+  ;   sub_string(PubKeyString, PadStart, _, 0, SubString),
+      string_concat(Acc, SubString, Output)
   ).
 
 /* convert_jwt_to_key(+Key, -SettingsKey) is semidet.
@@ -316,7 +317,7 @@ convert_jwk_to_key(Key, SettingsKey) :-
   string_length(PubKeyString, StrLength),
   wrap_key(PubKeyString, 0, 64, StrLength, "", WrappedKey),
   format(string(PubKeyFormatted),
-         "-----BEGIN PUBLIC KEY-----~n~s-----END PUBLIC KEY-----",
+         "-----BEGIN PUBLIC KEY-----~n~s~n-----END PUBLIC KEY-----",
          [WrappedKey]),
   tmp_file_stream(text, File, Stream),
   write(Stream, PubKeyFormatted),
