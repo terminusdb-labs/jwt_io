@@ -72,6 +72,8 @@ openssl ec -in sample-private.pem -pubout -out sample-public.pem
 :- use_module(library(http/json)).
 :- use_module(library(http/http_client)).
 :- use_module(library(http/http_json)).
+:- use_module(library(process)).
+:- use_module(library(ssl)).
 :- use_module(library(settings)).
 
 :- setting(keys,            list(dict), [],   'Signing keys').
