@@ -5,9 +5,9 @@ DOCKER_SWIPL=8.1.12
 DOCKER_JANSSON=2.12
 DOCKER_LIBJWT=1.12.0
 
-PACKSODIR=$(shell swipl -q -g "use_module(library(prolog_pack)), prolog_pack:def_environment('PACKSODIR', X), writeln(X)." -t halt)
 JWTLDFLAGS=$(shell pkg-config --libs libjwt)
 JWTCFLAGS=$(shell pkg-config --cflags libjwt)
+PACKSODIR=$(shell swipl -q -g "use_module(library(build/tools)), build_tools:def_environment('PACKSODIR', X, []), writeln(X)." -t halt)
 SSLLDFLAGS=-lssl -lcrypto
 SSLCFLAGS=
 CFLAGS=-D_GNU_SOURCE $(JWTCFLAGS) $(SSLCFLAGS) -pedantic -Wall -Wno-unused-result -fpic -c
