@@ -13,6 +13,11 @@ SSLCFLAGS=
 CFLAGS=-D_GNU_SOURCE $(JWTCFLAGS) $(SSLCFLAGS) -pedantic -Wall -Wno-unused-result -fpic -c
 LDFLAGS=$(JWTLDFLAGS) $(SSLLDFLAGS) -shared
 
+# macOS: allow unresolved SWI-Prolog symbols to resolve at load time
+ifeq ($(shell uname),Darwin)
+  LDFLAGS += -Wl,-undefined,dynamic_lookup
+endif
+
 LIBEXT=$(shell swipl -q -g 'current_prolog_flag(shared_object_extension, Ext), writeln(Ext)' -t halt)
 LIBNAME=jwt_io
 
