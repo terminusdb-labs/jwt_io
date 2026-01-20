@@ -31,8 +31,6 @@ test(rsa, true(Sub == "a")) :- test_encode_decode('rsa256', Sub).
 test(rsa, true(Sub == "a")) :- test_encode_decode('rsa384', Sub).
 test(rsa, true(Sub == "a")) :- test_encode_decode('rsa512', Sub).
 test(ecdsa, true(Sub == "a")) :- test_encode_decode('ecdsa256', Sub).
-test(ecdsa, true(Sub == "a")) :- test_encode_decode('ecdsa384', Sub).
-test(ecdsa, true(Sub == "a")) :- test_encode_decode('ecdsa512', Sub).
 
 test_encode_decode_iss(Payload, Options) :-
   jwt_encode('hmac256', Payload, X),

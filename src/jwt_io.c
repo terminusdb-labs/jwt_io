@@ -89,7 +89,7 @@ pl_jwt_decode(term_t in, term_t out_payload, term_t out_algorithm, term_t in_key
 install_t
 install(void)
 {
-	PL_register_foreign("jwt_parse_head", 2, pl_jwt_parse_head, 0);
-	PL_register_foreign("jwt_encode_from_string", 5, pl_jwt_encode, 0);
-	PL_register_foreign("jwt_decode_from_string", 4, pl_jwt_decode, 0);
+	PL_register_foreign("jwt_parse_head", 2, (pl_function_t)pl_jwt_parse_head, 0);
+	PL_register_foreign("jwt_encode_from_string", 5, (pl_function_t)pl_jwt_encode, 0);
+	PL_register_foreign("jwt_decode_from_string", 4, (pl_function_t)pl_jwt_decode, 0);
 }
